@@ -1,0 +1,16 @@
+module Ogrenci where
+
+{-
+plaindrom fonksiyonu parametre olarak gelen listenin tersten ve
+düzden okunuşunun aynı olduğunu kontrol eder.
+Örneğin "level" için True, "session" için False döner.
+fold fonksiyonlarından birini kullanmak zorunludur.
+Fonksiyonu test etmek için rastgele seçilen 5 kelime ile 5 test
+yapılmaktadır.
+-}
+palindrom :: Eq a => [a] -> Bool--bu satırı silmeyin/değiştirmeyin
+--1. yol: palindrom list = (foldl (\acc x-> x:acc) [] list) == list 
+--instead of: palindrom list = (reverse list) == list
+
+--2. yol :
+palindrom list = foldl (\acc (x,y)-> if x==y then acc else False) True (zip list (reverse list))

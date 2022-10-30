@@ -1,0 +1,40 @@
+module Ogrenci where --Bu satırı değiştirmeyin/silmeyin
+
+--enSonEleman fonksiyonunu yazın
+enSonEleman::[a]->a
+--1. yol: enSonEleman = last
+
+--2. yol:
+enSonEleman[x] = x
+enSonEleman(x:xs) = enSonEleman xs
+
+
+
+--sondanIkinci fonksiyonunu yazın(listenin sondan ikinci elemanını verir)
+sondanIkinci::[a]->a
+--1. yol: sondanIkinci list = last (init list)
+
+--2. yol: 
+sondanIkinci = last.init
+
+--3. yol: sondanIkinci [x,y] = x
+--sondanIkinci (x:xs) = sondanIkinci xs
+
+
+
+--ortanca fonksiyonunu yazın
+ortanca::[a]->a
+--1. yol: ortanca list = list !! div (length list) 2
+
+
+--2. yol:
+--ortanca [x] = x
+--ortanca [x, y] = y      --wyh it's y not x?
+--ortanca list = ortanca (tail(init list))
+
+
+--3.yol
+ortanca list = ortancaYardimci list (div (length list) 2)
+ortancaYardimci (x:_) 0 = x                                 --what does 0 and i mean? They are indexes
+ortancaYardimci (x:xs) i = ortancaYardimci xs (i-1)
+

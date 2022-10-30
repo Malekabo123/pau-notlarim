@@ -1,0 +1,24 @@
+# Taş-kağıt-makas
+# Kodunuzu bu dosya içine yazınız
+=begin
+Kodunuzun düzgün çalışması için
+input metodunun içindeki metni boş bırakın
+gets.chomp
+yeterli...
+=end
+
+o1 = gets.chomp
+o2 = gets.chomp
+
+if o1==o2
+    puts "berabere"
+elsif o1=="taş" && o2 =="makas" || o1=="kağıt" && o2 =="taş" || o1=="makas" && o2 =="kağıt"
+    puts "birinci oyuncu kazandı"
+else
+    puts "ikinci oyuncu kazandı"
+end
+    
+    
+    
+    
+    

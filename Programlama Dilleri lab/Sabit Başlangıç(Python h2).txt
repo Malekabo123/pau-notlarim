@@ -1,0 +1,6 @@
+"""Kodunuzu bu dosyaya yazın. Girdi alırken input metodunun içini boş bırakın
+input('')
+şeklinde ve ekrana istenen çıktı dışında başka bir şey yazdırmayın."""
+
+metin = input('')
+print(metin[0] + metin[1:].replace(metin[0] , "*"))
