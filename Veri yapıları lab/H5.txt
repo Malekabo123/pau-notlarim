@@ -1,0 +1,76 @@
+public class Traversal {
+        
+    static String result= "";
+    
+    public static<T> String inOrder(BTNode<T> node) {
+        result= "";
+        
+        recInOrder(node);
+                
+        return result;
+    }
+    
+    protected static<T> String recInOrder(BTNode<T> node) {
+        
+                
+        if(node.left!=null)
+            recInOrder(node.left);
+           
+        
+        if((node.right==null) && (node.left==null))
+            return result+=node.value+" ";
+        else
+            result+=node.value+" ";
+        
+        
+        if(node.right!=null)
+            recInOrder(node.right);
+        
+        return null;
+    }
+
+    public static<T> String preOrder(BTNode<T> node) {
+        
+        result= "";
+        
+        recPreOrder(node);
+                
+        return result;
+    }
+    
+     protected static<T> String recPreOrder(BTNode<T> node) {
+        
+         if((node.right==null) && (node.left==null))
+            return result+=node.value+" ";
+        else
+            result+=node.value+" "; 
+         
+         
+        if(node.left!=null)
+            recPreOrder(node.left);
+        
+        if(node.right!=null)
+            recPreOrder(node.right);
+        
+        return null;
+    }
+
+    public static<T> String postOrder(BTNode<T> node) {
+        result= "";
+        recPostOrder(node);
+        
+        
+        return result;
+    }
+    
+    protected static<T> String recPostOrder(BTNode<T> node) {
+        
+        if(node.left!=null)
+            recPostOrder(node.left);
+        if(node.right!=null)
+            recPostOrder(node.right);
+        
+        
+        return result+=node.value+" ";
+    }
+}

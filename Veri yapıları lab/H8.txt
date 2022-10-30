@@ -1,0 +1,80 @@
+import java.util.LinkedList;
+
+public class SeperatedChainHash {
+    public LinkedList<Integer>[] dizi;
+
+    public SeperatedChainHash() {
+        //içerği değiştirmeyin
+        dizi=new LinkedList[23];
+    }
+    public SeperatedChainHash(int boyut) {
+        //içerği değiştirmeyin
+        dizi=new LinkedList[boyut];
+    }
+    public int hash(int deger){
+        //içerği değiştirmeyin
+        return deger%dizi.length;
+    }
+    public void ekle(int deger){
+        int konum = hash(deger);
+        
+        if (dizi[konum] == null){
+            dizi[konum] = new LinkedList<>();
+        }
+        
+        dizi[konum].add(deger);
+
+    }
+    public boolean sil(int deger){
+        int konum = hash(deger);
+        
+        if(dizi[konum] == null){
+            return false;
+        } else{
+            LinkedList list = dizi[konum];
+            int index = list.indexOf(deger);
+            list.remove(index);
+            
+            return true;
+        }
+        
+    }    
+    public int newSize (int length) {
+		int newLength = length * 2;
+				
+		while (true) {
+			newLength++;
+            boolean pointer = true;
+            
+			for (int i = 2; i < newLength ; i++) {
+				if (newLength % i == 0) {
+				    pointer = false;
+					newLength++;
+					break;
+				} else {
+					pointer = true;
+				}
+			}
+			if (pointer == true)
+				return newLength;
+		}
+	
+    }
+    public void yenidenOzetle() {
+        SeperatedChainHash yenidenOzetle = new SeperatedChainHash(newSize(dizi.length));
+		
+		for (LinkedList<Integer> list : dizi) {
+		    try {
+    			for (Integer val : list) {
+    				yenidenOzetle.ekle(val);
+    			}
+		    } catch (Exception e) {
+      
+            }
+		}
+		
+		dizi = yenidenOzetle.dizi;
+        
+        
+    }
+}

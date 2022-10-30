@@ -1,0 +1,28 @@
+import java.util.List;
+import java.util.Map;
+
+public class LabGraph<T> extends AbstractGraph<T> {
+
+    @Override
+    public int outDegree(T deger) {
+        Vertex<T> vertex = verticesMap.get(deger);
+        
+        if (vertex == null)
+            return -1;
+            
+        return vertex.edges.size();
+    }
+
+    @Override
+    public int inDegree(T deger) {
+        Vertex<T> vertex =verticesMap.get(deger);
+        if(vertex==null)
+            return -1;
+        int counter=0;
+        for (Vertex<T> v:vertices)
+            for (Edge<T> e:v.edges)
+                if(e.to.value.equals(deger))
+                    counter++;
+        return counter;
+    }
+}

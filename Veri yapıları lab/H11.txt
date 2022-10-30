@@ -1,0 +1,89 @@
+import java.util.List;
+import java.util.*;
+import java.io.*;
+import java.lang.*;
+
+public class LabGraph2<T> extends AbstractGraph2<T> {
+    int V;
+    List<Integer> adj[];
+    
+    public void Graph(int V)
+    {
+        this.V = V;
+        adj = new ArrayList[V];
+        for (int i = 0; i < V; i++)
+            adj[i] = new ArrayList<Integer>();
+    }
+    
+    public void addEdge(int u, int v)
+    {
+        adj[u].add(v);
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        
+        LabGraph2 cloneGraph = new LabGraph2<>();
+        
+        for(Vertex<T> vertex : vertices){
+            cloneGraph.addVertex(vertex.value);
+            
+            for (Edge<T> edge : vertex.edges){
+                cloneGraph.addEdge(edge.from.value , edge.to.value);
+            }
+        }
+        return cloneGraph;
+    }
+
+    @Override
+    public void removeVertex(T deger) {
+        Vertex<T> vertex = verticesMap.get(deger);
+        
+        for(Edge<T> edge : vertex.edges){
+            if (edge.to.value.equals(deger)){
+                vertex.edges.remove(edge);
+            }
+        }
+        vertices.remove(vertex);
+    }
+
+    @Override
+    public List<T> topologicalSort() {
+        int indegree[] = new int[V];
+        
+        for (int i = 0; i < V; i++) {
+            ArrayList<Integer> temp
+                = (ArrayList<Integer>)adj[i];
+            for (int node : temp) {
+                indegree[node]++;
+            }
+        }
+        
+        Queue<Integer> q
+            = new LinkedList<Integer>();
+        for (int i = 0; i < V; i++) {
+            if (indegree[i] == 0)
+                q.add(i);
+        }
+ 
+        // Initialize count of visited vertices
+        int cnt = 0;
+        
+        Vector<Integer> topOrder = new Vector<Integer>();
+        while (!q.isEmpty()) {
+            int u = q.poll();
+            topOrder.add(u);
+            
+            for (int node : adj[u]) {
+                // If in-degree becomes zero,
+                // add it to queue
+                if (--indegree[node] == 0)
+                    q.add(node);
+            }
+            cnt++;
+        }
+        
+        
+        return null;
+    }
+}

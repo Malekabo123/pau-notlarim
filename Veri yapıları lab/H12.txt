@@ -1,0 +1,81 @@
+import java.util.List;
+import java.util.*;
+
+public class LabGraph3<T extends Comparable<T>> extends AbstractGraph3<T> {
+    @Override
+    public List<T> dfs(T baslangic) {
+        Vertex<T> ilkVertex = verticesMap.get(baslangic);
+        
+        Stack<Vertex<T>> stack = new Stack<>(); //Dolsilacak dugumler
+        ArrayList<T> visited = new ArrayList<>(); //Ziyaret edilen dugumler
+        ArrayList<Edge<T>> edgeList = new ArrayList<>(); //Ziyaret edilen kenarlar
+        
+        stack.push(ilkVertex);
+        
+        while(!stack.isEmpty()){
+            Vertex<T> mevcut = stack.pop();
+            
+            if(visited.contains(mevcut.value)){ //Daha onceden ziyaret ettim mi?
+                continue;
+            }
+            
+            visited.add(mevcut.value);
+            
+            List<Edge<T>> edges = mevcut.edges; //Sirasi gelen dugumun tum kenarlarini tutar
+            ArrayList<T> komsuValues = new ArrayList<>(); //Sirasi gelen dugumun degerlerini icerir
+            HashMap<T , Vertex<T>> komsuHash = new HashMap<T , Vertex<T>>(); //Sirasi gelen dugumu ("value" , vertex) seklinde tutulmasini saglar
+            
+            for(Edge<T> edge : edges){
+                if(!edgeList.contains(edge)){
+                    edgeList.add(edge);
+                    komsuValues.add(edge.to.value);
+                    komsuHash.put(edge.to.value , edge.to);
+                }
+            }
+            
+            Collections.sort(komsuValues);
+            Collections.reverse(komsuValues);
+            
+            for(T value : komsuValues) {
+                Vertex<T> siraliVertex = komsuHash.get(value);
+                stack.push(siraliVertex);
+            }
+            
+        }
+        
+        return visited;
+    }
+    
+    @Override
+    public List<T> bfs(T baslangic) {
+        Queue<T> queue = new LinkedList<T>();
+        List<T> visited = new ArrayList<>();
+        List<T> temporary = new ArrayList<>();
+        queue.add(baslangic);
+        while (!queue.isEmpty()){
+
+            T current= queue.remove();
+            if (visited.contains(current))
+                continue;
+
+            visited.add(current);
+
+            for (Vertex<T> vertex : vertices) {
+                for (Edge<T> edge: vertex.edges ){
+                    if (vertex.value.equals(current)) {
+                        temporary.add(edge.to.value);
+                    }
+                }
+            }
+
+            temporary.sort(Comparator.naturalOrder());
+
+            for (int i = 0; i < temporary.size(); i++) {
+                queue.add(temporary.get(i));
+            }
+
+        }
+
+        return visited;
+    }
+}

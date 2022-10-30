@@ -1,0 +1,45 @@
+public class QuadraticProbeHashing<T> {
+    public HashEntry<T>[] dizi;
+    public int elemanSayisi;
+
+    public QuadraticProbeHashing() {
+        dizi=new HashEntry[23];
+    }
+    public QuadraticProbeHashing(int boyut){
+        dizi=new HashEntry[boyut];
+    }
+    public int hash(T deger) {
+        return deger.hashCode()%dizi.length;
+    }
+
+    public void ekle(T eleman){
+        int konum = hash(eleman);
+        int i = 0;
+        
+        while(true){
+            HashEntry<T> cell = dizi[(konum+i*i) % dizi.length];
+            
+            if(cell == null || cell.isActive == false){
+                dizi[(konum+i*i) % dizi.length] = new HashEntry<>(eleman);
+                break;
+            }
+            i++;
+        }
+        elemanSayisi++;
+    }
+
+    public boolean sil(T eleman){
+        int konum = hash(eleman);
+        int i = 0;
+        
+
+        while(true){
+            if(dizi[(konum+i*i) % dizi.length].value.equals(eleman) && dizi[(konum+i*i) % dizi.length].isActive == true){
+                dizi[(konum+i*i) % dizi.length].isActive = false;
+                return true;
+            }
+            i++;
+        }
+    }
+
+}

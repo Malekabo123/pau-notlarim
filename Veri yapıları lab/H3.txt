@@ -1,0 +1,62 @@
+public class LabDoublyLinkedList<T> extends DoublyLinkedList<T> {
+    /**
+     * Çift bağlı listenin istenilen konumuna eleman ekler
+     * @param index konum
+     * @param value eklenecek eleman
+     */
+    @Override
+    public void insertAt(int index, T value) {
+        if (index ==0)
+            addFirst(value);
+        else if (index == size() )
+            addLast(value);
+        else{
+            int i=0;
+            Node <T> current = getHead();
+            
+            while (current != null && i < index-1) {
+                i++;
+                current = current.next;
+            }
+            
+            Node <T> yeni = new Node<>(value, current.next, current);
+            current.next.previous = yeni;
+            current.next = yeni;
+            setSize(size() +1);
+            
+        }
+    }
+
+    /**
+     * Verilen konumdaki elemanı siler
+     * @param index silinecek elemanın konumu
+     * @return silinen değer
+     */
+    @Override
+    public T removeAt(int index) {
+        if (index ==0)
+            removeFirst();
+        else if (index == size()-1)
+            removeLast();
+        else{
+            int i=size() ;
+            Node <T> current = getTail();
+            
+            while (current != null && i > index+1) {
+                i--;
+                current = current.previous;
+            }
+            
+            //Node <T> yeni = new Node<>(value, current.next, current);
+            current.next.previous = current.previous;
+            current.previous.next = current.next;
+            
+            setSize(size() -1);
+            
+            
+        }    
+        return null;
+        
+        
+    }
+}

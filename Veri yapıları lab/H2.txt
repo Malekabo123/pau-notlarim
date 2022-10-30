@@ -1,0 +1,200 @@
+import java.util.*;
+
+/**
+ * Islemler sınıfı içindeki 4 metodun yazılması istenmektedir
+ */
+public class Islemler {
+    /**
+     * Yığıtın elemnlarının sırasını tersine çevirir
+     * @param s Tersine çevrilecek yığıt
+     * @return Tersine çevirlmiş yığıtı döndürür
+     */
+    public static <T> Stack<T> tersCevir(Stack<T> s){
+        Stack <T> tersStack = new Stack<>();
+        Stack <T> stack = (Stack <T>) s.clone();
+        
+        while (!stack.isEmpty()) {
+            tersStack.push(stack.pop());
+        }
+        
+        
+        return tersStack;
+    }
+
+    /**
+     * İki yığıtın eşit olup olmadığını kontrol eder
+     * @param s1 Birinci yığıt
+     * @param s2 İkinci yığıt
+     * @return İki yığıtın eşit olma durumunu döndürür
+     */
+    public static <T> boolean esit(Stack<T> s1, Stack<T> s2)
+    {
+        
+        return s1.equals(s2);
+        
+        
+        
+         
+    }
+
+    /**
+     * Postfix ifadeyi değerlendirir. İşlemler tamsayılar üzerinde gerçekleşir. "7 5 /" işleminin sonucu 1'dir.
+     * @param girdi Girdi ifadesi
+     * @return İfadenin sonucu
+     */
+    public static int postfixDegerlendir(String girdi) {
+        String[] girdiArray = splitToTokens(girdi);
+        Stack<Integer> stack = new Stack<>();
+        
+        int sonuc = 0;
+        
+        for(int i = 0 ; i<girdiArray.length ; i++){
+            if (girdiArray[i].chars().allMatch(ch -> Character.isDigit(ch))) {  
+                stack.push(Integer.parseInt(girdiArray[i])); //1. and 2. are numbers (it's located here)
+            } else {
+                int deger1 = stack.pop(); //3. is a symbol so we'll take 1. and 2. out and do the operation
+                int deger2 = stack.pop();
+                
+                if(girdiArray[i].equals("+")){
+                    sonuc = deger2 + deger1;
+                } else if(girdiArray[i].equals("-")){
+                    sonuc = deger2 - deger1;
+                } else if(girdiArray[i].equals("*")){
+                    sonuc = deger2 * deger1;
+                } else if(girdiArray[i].equals("/")){
+                    sonuc = deger2 / deger1;
+                }
+              
+              stack.push(sonuc);
+            }
+    
+        }
+        return stack.pop(); 
+    }
+    
+    
+    static int getPriority(char c) {
+    if(c == '+' || c == '-') {
+      return 1;
+    } else {
+      return 2;
+    } 
+  }
+    
+
+    /**
+     * Infix ifadeyi postfix'e dönüştürür.
+     * @param girdi Infix girdi metni
+     * @return Dönüştürülmüş postfix ifade
+     */
+     public static String infixToPostfix(String girdi){
+        
+        String result ="";
+        Stack<Character> stack = new Stack<>();
+        
+        for(int i=0; i<girdi.length();i++){
+            char ch = girdi.charAt(i);
+            
+            
+            if(Character.isDigit(ch)){
+                int basamak=basamakBulucu(girdi,i);
+                if(basamak==1){
+                result+=ch+" ";
+                }else{
+                    for (int s = 1; s <= basamak; s++) {                        
+                        ch = girdi.charAt(i);
+                        result+=ch;
+                        if((basamak-s)!=0)
+                            i++;
+                    }
+                    result+=" ";
+                }
+                
+            }else if(isOperator(ch)){
+                
+                while (!stack.isEmpty() && OpPrec(ch) <= OpPrec(stack.peek())&& stack.peek()!='('){ 
+                    
+                    result += stack.pop()+ " "; 
+                } 
+                stack.push(ch);
+            
+            }else if(isLeftParanthesis(ch)){
+                stack.push(ch);
+            }else if(isRightParanthesis(ch)){
+                while(stack.peek()!='(' ){
+                    result+=stack.pop()+" ";
+                }
+                stack.pop();//sondaki sol parantez için
+            }
+            
+            
+        }
+        while (!stack.isEmpty()){
+            if(stack.size()>1)
+                result += stack.pop()+" ";
+            else
+                result += stack.pop();
+        }       
+                
+        return result;
+    }
+    
+    protected static int basamakBulucu(String girdi, int sayac) {
+        int basamak=1;
+        int length=girdi.length();
+        while(length>(sayac+1)){
+            char ch = girdi.charAt(++sayac);
+        
+            if(Character.isDigit(ch)){
+                basamak++;             
+            }else
+                break;
+        }
+                
+        return basamak;
+    }
+
+    protected static boolean isOperator(char ch){
+        return ch == '+'|| ch == '-'|| ch == '*'|| ch == '/';
+    }
+
+    protected static boolean isLeftParanthesis(char ch){
+        return ch == '(';
+    }
+    
+    protected static boolean isRightParanthesis(char ch){
+        return ch == ')';
+    }
+
+    protected static int OpPrec(char ch){
+        switch(ch){
+          case '+':
+          case '-':
+              return 1;  
+          case '*':
+          case '/':
+              return 2;
+        }
+        return 1;
+    }
+    
+
+    /**
+     * Infix ifadeyi sembollerine ayıran metod
+     * @param girdi Infix ifade
+     * @return Sembol dizisi
+     */
+    private static String[] splitToTokens(String girdi)
+    {
+        StringTokenizer t=new StringTokenizer(girdi, "+-*/^() ",true);
+        List<String> tokenList=new ArrayList<>();
+        while (t.hasMoreTokens()){
+            String s=t.nextToken().trim();
+            if(!s.equals(""))
+                tokenList.add(s);
+        }
+        String [] tl=new String[tokenList.size()];
+        tokenList.toArray(tl);
+        return tl;
+    }
+}

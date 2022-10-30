@@ -1,0 +1,78 @@
+public class LabBinarySearchTree<T extends Comparable<T>> extends BinarySearchTree<T> {
+    public LabBinarySearchTree(){
+        //Bu metodu değiştirmeyin
+    }
+    public LabBinarySearchTree(BTNode<T> root) {
+        //Bu metodu değiştirmeyin
+        super(root);
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+
+        return new LabBinarySearchTree(copy(getRoot())) ;
+    }
+    
+    public BTNode<T> copy (BTNode<T> copyNode){
+        if(copyNode == null)
+            return null;
+        
+        BTNode<T> newNode = new BTNode (copyNode.value,copy(copyNode.left),copy(copyNode.right) );
+            
+        return newNode;
+    }
+
+    @Override
+    public BTNode<T> successor(T value) {
+        BTNode<T> node= find(getRoot(), value);
+        
+        if(node == null || node.right == null){
+            return null;
+        }
+        
+        node = node.right;
+        
+        while (node.left != null){
+            node = node.left;
+        }
+        return node;
+    }
+    
+    
+
+    @Override
+    public BTNode<T> predecessor(T value) {
+        BTNode<T> node= find(getRoot(), value);
+        
+        if(node == null || node.left == null){
+            return null;
+        }
+        
+        node = node.left;
+        
+        while (node.right != null){
+            node = node.right;
+        }
+        return node;
+    }
+
+    @Override
+    public BTNode<T> findParent(BTNode<T> node) {
+        BTNode<T> parent = getRoot();
+        
+        if(node==parent)
+            return null;
+    
+        while(parent.right.value.compareTo(node.value)!=0 && parent.left.value.compareTo(node.value)!=0){
+            if((parent.value.compareTo(node.value)>0)){            
+                parent=parent.left;            
+            }
+            else if(parent.value.compareTo(node.value)<0){
+                parent=parent.right;
+            }
+        }
+        return parent; 
+    }
+
+
+}
