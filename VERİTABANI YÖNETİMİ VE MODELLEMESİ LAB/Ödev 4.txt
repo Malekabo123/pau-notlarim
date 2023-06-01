@@ -1,0 +1,30 @@
+Malek Alismail   20253833
+
+
+View'in döndürdüğü Sorgu: 
+Eczanelerin adları, eczanedeki personellerin isimleri, eczanedeki tüm ilaçların isimleri, türü, üreten firma adı.
+
+
+View Create Scripti:
+
+CREATE VIEW view_ilacBilgileri AS
+SELECT 
+EczaneAdi=tbl_Eczane.ad, 
+PersonelAdi=tbl_Personel.ad, 
+IlacAdi=tbl_ilac.ad, 
+IlacTurId=tbl_ilacTur.id, 
+FirmaAdi=tbl_Firma.ad
+FROM tbl_Eczane INNER JOIN tbl_eczanePersonel
+ON tbl_Eczane.id = tbl_eczanePersonel.eczaneId
+INNER JOIN tbl_Personel
+ON tbl_Personel.id = tbl_eczanePersonel.perosnelId
+INNER JOIN tbl_eczaneIlac
+ON tbl_eczaneIlac.eczaneId = tbl_Eczane.id
+INNER JOIN tbl_ilac
+ON tbl_ilac.id = tbl_eczaneIlac.ilacId
+INNER JOIN tbl_ilacTur
+ON tbl_ilacTur.id = tbl_ilac.ilacTurId
+INNER JOIN tbl_ilacFirma
+ON tbl_ilacFirma.ilacId = tbl_ilac.id
+INNER JOIN tbl_Firma
+ON tbl_Firma.id = tbl_ilacFirma.firmaId

@@ -1,0 +1,270 @@
+Malek Alismail   20253833
+
+
+Note: ER diyagramında biraz güncelleme yaptım:
+-Eczacı ve Asistan birleştirdim (personel olarak yaptım)
+-eczacıOkurRecete ilişkisi sildim
+-eczacıSatarIlac ilişkisi sildim (eczanede ilaç satılır)
+-eczacıVerirFis ilişkisi eczaneye bağladım (eczacı ile idi)
+-Eczane telefonNo ekledim
+-Hasta varlığı ekledim
+-Personel id ekledim (primary key TC No idi)
+
+
+Note2: düzenlenmiş ER diyagramı ödev 3 ile göndereceğim
+
+
+
+
+
+CREATE database eczaneDB
+GO
+USE eczaneDB
+GO
+
+CREATE TABLE [dbo].[tbl_ilac](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[ad] [nvarchar](50) NULL,
+	[agirlik] [int] NULL,
+	[ilacTurId] [int] NULL,
+	[kullanmaSekli] [nvarchar](250) NULL,
+	[barkod] [int] NULL,
+	[yasAraligi] [nvarchar](50) NULL,
+	[kimyasalYapisi] [nvarchar](50) NULL,
+	[korunanHastalik] [nvarchar](50) NULL,
+	[gunlukTuketim] [int] NULL,
+	[korumaYontemi] [nvarchar](50) NULL,
+	[yemekGereksinimi] [nvarchar](50) NULL,
+	[zarariGorebilen] [nvarchar](50) NULL,
+	[yanEtkileri] [nvarchar](50) NULL,
+	[fiyat] [float] NULL,
+	[uretimTarihi] [smalldatetime] NULL,
+	[sonKullanmaTarihi] [smalldatetime] NULL,
+ CONSTRAINT [PK_tbl_ilac] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)
+)
+GO
+
+CREATE TABLE [dbo].[tbl_Eczane](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[ad] [nvarchar](50) NULL,
+	[lokasyon] [nvarchar](50) NULL,
+	[telefonNo] [nvarchar](50) NULL,
+	[acilisSaati] [nvarchar](50) NULL,
+	[kapanisSaati] [nvarchar](50) NULL,
+	[nobetGunu] [smalldatetime] NULL,
+	[mahalle] [nvarchar](50) NULL,
+	[bina] [nvarchar](50) NULL,
+ CONSTRAINT [PK_tbl_eczane] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)
+)
+GO
+
+CREATE TABLE [dbo].[tbl_Depo](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[ad] [nvarchar](50) NULL,
+	[kapasite] [int] NULL,
+	[sehir] [nvarchar](50) NULL,
+	[mahalle] [nvarchar](50) NULL,
+	[bina] [nvarchar](50) NULL,
+ CONSTRAINT [PK_tbl_Depo] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)
+)
+GO
+
+CREATE TABLE [dbo].[tbl_Firma](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[ad] [nvarchar](50) NULL,
+	[kapasite] [int] NULL,
+	[sehir] [nvarchar](50) NULL,
+	[mahalle] [nvarchar](50) NULL,
+	[bina] [nvarchar](50) NULL,
+ CONSTRAINT [PK_tbl_Firma] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)
+)
+GO
+
+CREATE TABLE [dbo].[tbl_Fis](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[toplamFiyat] [nvarchar](50) NULL,
+	[vermeTarihi] [smalldatetime] NULL,
+	[personelId] [int] NULL,
+ CONSTRAINT [PK_tbl_Fis] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)
+)
+GO
+
+CREATE TABLE [dbo].[tbl_Hasta](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[ad] [nvarchar](50) NULL,
+	[soyad] [nvarchar](50) NULL,
+	[dogumTarihi] [smalldatetime] NULL,
+	[cinsiyet] [nvarchar](50) NULL,
+	[tcKimlikNo] [int] NULL,
+ CONSTRAINT [PK_tbl_Hasta] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)
+)
+GO
+
+CREATE TABLE [dbo].[tbl_Personel](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[ad] [nvarchar](50) NULL,
+	[soyad] [nvarchar](50) NULL,
+	[maas] [float] NULL,
+	[cinsiyet] [nvarchar](50) NULL,
+	[telefonNo] [int] NULL,
+	[email] [nvarchar](50) NULL,
+	[devamSaatleri] [nvarchar](50) NULL,
+	[sehir] [nvarchar](50) NULL,
+	[mahalle] [nvarchar](50) NULL,
+	[bina] [nvarchar](50) NULL,
+	[daire] [nvarchar](50) NULL,
+	[personelTurId] [int] NULL,
+	[tcKimlikNo] [int] NULL,
+ CONSTRAINT [PK_tbl_personel] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)
+)
+GO
+
+CREATE TABLE [dbo].[tbl_Recete](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[verenDoktorAdi] [nvarchar](50) NULL,
+	[verenHastane] [nvarchar](50) NULL,
+	[vermeTarihi] [smalldatetime] NULL,
+	[hastaId] [int] NULL,
+ CONSTRAINT [PK_tbl_Recete] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)
+)
+GO
+
+CREATE TABLE [dbo].[tbl_personelTur](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[ad] [nvarchar](50) NULL,
+ CONSTRAINT [PK_tbl_personelTur] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)
+)
+GO
+
+CREATE TABLE [dbo].[tbl_ilacTur](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[isim] [nvarchar](50) NULL,
+ CONSTRAINT [PK_tbl_ilacTur] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)
+)
+GO
+
+CREATE TABLE [dbo].[tbl_ilacRecete](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[receteId] [int] NULL,
+	[ilacId] [int] NULL,
+	[ilacAdedi] [int] NULL,
+ CONSTRAINT [PK_tbl_ilacRecete] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)
+)
+GO
+
+CREATE TABLE [dbo].[tbl_ilacFis](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[fisId] [int] NULL,
+	[ilacId] [int] NULL,
+	[ilacAdedi] [int] NULL,
+ CONSTRAINT [PK_tbl_ilacFis] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)
+)
+GO
+
+
+CREATE TABLE [dbo].[tbl_ilacFirma](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[ilacId] [int] NULL,
+	[firmaId] [int] NULL,
+	[ilacSatisFiyati] [float] NULL,
+ CONSTRAINT [PK_tbl_ilacFirma] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)
+)
+GO
+
+CREATE TABLE [dbo].[tbl_ilacDepo](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[depoId] [int] NULL,
+	[ilacId] [int] NULL,
+	[ilacAdedi] [int] NULL,
+	[ilacSatisFiyati] [float] NULL,
+ CONSTRAINT [PK_tbl_IlacDepo] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)
+)
+GO
+
+CREATE TABLE [dbo].[tbl_eczanePersonel](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[eczaneId] [int] NULL,
+	[perosnelId] [int] NULL,
+ CONSTRAINT [PK_tbl_eczanePersonel] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)
+)
+GO
+
+
+CREATE TABLE [dbo].[tbl_eczaneIlac](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[eczaneId] [int] NULL,
+	[ilacId] [int] NULL,
+	[ilacAdedi] [int] NULL,
+ CONSTRAINT [PK_tbl_eczaneIlac] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)
+)
+GO
+
+CREATE TABLE [dbo].[tbl_depoFirma](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[depoId] [int] NULL,
+	[firmaId] [int] NULL,
+ CONSTRAINT [PK_tbl_depoFirma] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)
+)
+GO
+
+CREATE TABLE [dbo].[tbl_depoEczane](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[depoId] [int] NULL,
+	[eczaneId] [int] NULL,
+ CONSTRAINT [PK_tbl_depoEczane] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)
+)
+GO

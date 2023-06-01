@@ -1,0 +1,82 @@
+Malek Alismail    20253833
+
+
+
+a)Fiş idsi ve aya göre toplam satılan ilaç fiyatları heasplayan bir udf:
+
+
+CREATE FUNCTION udf_totalmoneybymonth
+(@FISID INT , @AY INT)
+RETURNS INT AS BEGIN
+	DECLARE @ILACADEDI AS INT
+	DECLARE @ILACID AS INT
+	DECLARE @TOPLAM AS INT
+	SET @TOPLAM = 0
+	DECLARE tabloKontrol SCROLL CURSOR FOR
+		SELECT TI.id,TIF.ilacAdedi 
+		FROM tbl_ilacFis TIF INNER JOIN tbl_ilac TI
+		ON TI.id = TIF.ilacId
+		WHERE fisId = @FISID
+		AND fisId IN (SELECT id FROM tbl_Fis WHERE MONTH(vermeTarihi)=@AY)
+	OPEN tabloKontrol
+	FETCH tabloKontrol INTO @ILACID,@ILACADEDI
+	WHILE (@@FETCH_STATUS<>-1)
+	BEGIN
+		SELECT @TOPLAM = @TOPLAM + ((SELECT fiyat FROM tbl_ilac WHERE id = @ILACID)*@ILACADEDI)
+		FETCH tabloKontrol INTO @ILACID,@ILACADEDI
+	END
+	CLOSE tabloKontrol
+	DEALLOCATE tabloKontrol
+RETURN @TOPLAM
+END
+
+
+
+
+b)Bir önceki soruda oluşturduğum udf'i kullanarak, eczane adı ve aya göre toplam satılan ilaç fiyatları hesaplayan bir udf:
+
+
+ALTER FUNCTION udf_EczaneVeAyGoreToplamPara
+(@ECZANEAD AS NVARCHAR(100) , @AY AS INT)
+RETURNS @tmp TABLE(
+	ECZANEAD NVARCHAR(100),
+	AY NVARCHAR(50),
+	TOPLAM INT
+)
+AS BEGIN
+	INSERT INTO @tmp
+	SELECT TE.ad ,(SELECT FORMAT(DATEFROMPARTS(1900, @AY , 1), 'MMMM', 'en-US')),
+	SUM(dbo.udf_totalmoneybymonth(TF.id,@AY))
+	FROM tbl_Eczane TE INNER JOIN tbl_eczanePersonel TEP
+	ON TE.id = TEP.eczaneId
+	INNER JOIN tbl_Personel TP
+	ON TP.id = TEP.perosnelId
+	INNER JOIN tbl_Fis TF
+	ON TF.personelId = TP.id
+	WHERE TE.ad = @ECZANEAD AND MONTH(TF.vermeTarihi) = @AY
+	GROUP BY TE.ad, MONTH(TF.vermeTarihi)
+RETURN
+END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT * FROM dbo.udf_EczaneVeAyGoreToplamPara('hayat',12)
+
+SELECT SUM(dbo.udf_totalmoneybymonth(id,10))
+FROM tbl_Fis

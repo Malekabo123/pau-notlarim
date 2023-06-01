@@ -1,0 +1,20 @@
+Malek Alismail   20253833
+
+
+
+NOT: personel tablosuna aktif sütütnü eklenmiş (aktif = 0 ise pasif ; aktif = 1 ise aktif).
+
+
+
+-Bir personelin daha önce bir fis verdiyse ilgili personelin silinmesi engelleyen trigger:
+
+CREATE Trigger deletePersonelTrigger 
+ON tbl_Personel instead of delete 
+As Begin
+	IF Exists (select personelId from tbl_Fis where personelId in (Select id from deleted))
+		BEGIN
+			RAISERROR('Daha once bu personel bir fis vermis, personel tablosunda pasif haline getirilmis.',16,1)
+			ROLLBACK
+		END
+	Update tbl_personel SET aktif=0 Where id in (Select id from deleted)
+END

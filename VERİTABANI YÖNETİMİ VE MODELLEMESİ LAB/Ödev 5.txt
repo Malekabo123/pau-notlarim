@@ -1,0 +1,110 @@
+Malek Alismail 20253833
+
+
+***Ilk soru için 2 tane sp yazdım çünkü tam olarak istediğinizi anlamadım.
+
+*1. sp
+a) Firmanın ismine ve eczanenin ismine göre,
+	ilaç adı, ilaç türü, eczanede ilaç adedi, korunan hastalık ve ilaç fiyatı
+	döndüren bir store procedure.
+
+-script:
+
+CREATE PROC sp_FirmaVeEczaneGoreIlacBilgileri
+@EczaneAd AS NVARCHAR(50), @FirmaAdi AS NVARCHAR(50)
+AS BEGIN
+
+SELECT 
+IlacAdi=TI.ad , 
+IlacTurAdi=TIT.isim , 
+TEI.ilacAdedi , 
+TI.korunanHastalik , 
+TI.fiyat
+FROM tbl_Firma TF INNER JOIN tbl_ilacFirma TIF
+ON TF.id = TIF.firmaId
+INNER JOIN tbl_ilac TI
+ON TI.id = TIF.ilacId
+INNER JOIN tbl_ilacTur TIT
+ON TI.ilacTurId = TIT.id
+INNER JOIN tbl_eczaneIlac TEI
+ON TI.id = TEI.ilacId
+WHERE TF.ad = @FirmaAdi AND TE.ad = @EczaneAd
+
+END
+
+
+-çalıştırma:
+EXEC sp_FirmaVeEczaneGoreIlacBilgileri @EczaneAd='ibrahim',@FirmaAdi='unifarma'
+
+
+
+
+*2. sp
+a)İlaç türüne göre ilaç sayısını döndüren bir store procedure.
+
+-script:
+
+CREATE PROC sp_TureGoreIlacSayisi
+@ilacTuru AS NVARCHAR(50),
+@sayisi AS INT OUT
+AS BEGIN
+	SELECT @sayisi = COUNT(*)
+	FROM tbl_ilac TI INNER JOIN tbl_ilacTur TIT
+	ON TI.ilacTurId = TIT.id
+	WHERE TIT.isim = @ilacTuru
+END
+
+-çalıştırma:
+
+DECLARE @SAYI AS INT
+EXEC sp_TureGoreIlacSayisi @ilacTuru='surup',@sayisi = @SAYI OUT
+SELECT @SAYI
+
+
+
+
+
+
+
+
+b) Hastanın adını, soyadını, reçete verme tarihi, ve 1 tane ilaç adını türünü ve miktarını alıp, Reçete ve Fiş tablolara ekleyen bir store procedure.
+
+-script:
+
+CREATE PROC sp_AddFisRecete
+@HastaAd AS NVARCHAR(50) ,
+@HastaSoyad AS NVARCHAR(50),
+@VermeTarihi AS DATE,
+@ilacAd AS NVARCHAR(50),
+@ilacTur AS NVARCHAR(50),
+@ilacMiktar AS INT
+AS BEGIN
+	DECLARE @TOPLAM AS INT
+	SELECT @TOPLAM = @ilacMiktar * (SELECT TI.fiyat FROM tbl_ilac TI
+		WHERE TI.ad=@ilacAd AND TI.ilacTurId IN (SELECT TIT.id FROM tbl_ilacTur TIT WHERE TIT.isim=@ilacTur))
+
+	BEGIN TRANSACTION
+	INSERT INTO tbl_Recete
+	VALUES (NULL,NULL,@VermeTarihi,(SELECT id FROM tbl_Hasta WHERE AD = @HastaAd AND soyad = @HastaSoyad))
+
+	INSERT INTO tbl_Fis
+	VALUES (@TOPLAM,@VermeTarihi,NULL)
+
+	IF (@@error <> 0)
+	BEGIN
+	SELECT 'ROLLBACK'
+	ROLLBACK TRANSACTION
+	END
+	COMMIT TRANSACTION
+END
+
+-çalıştırma:
+
+SET DATEFORMAT DMY;
+EXEC sp_AddFisRecete 
+@HastaAd ='armin' ,
+@HastaSoyad ='arlert',
+@VermeTarihi ='12.10.2022',
+@ilacAd ='citamol',
+@ilacTur ='hap',
+@ilacMiktar = 2
